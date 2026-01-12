@@ -8,6 +8,7 @@
       - python-langdetect
       - python-requests
       - python-beautifulsoup4
+      - pyhton-pyacoustid
     state: present
   become: yes
   when: ansible_facts['os_family'] == 'Archlinux'

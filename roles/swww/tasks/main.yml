@@ -1,0 +1,9 @@
+---
+- name: isntall swww
+  package:
+    name:
+      - swww
+    state: present
+  when: ansible_facts['os_family'] == 'Archlinux'
+  tags: [client]
+  become: yes

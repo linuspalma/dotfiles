@@ -2,3 +2,27 @@ all:
   hosts:
     localhost:
       ansible_connection: local
+      # Host-spezifische Variablen
+      target_user: lpalma
+      deployment_mode: symlink
+      setup_root_config: true
+
+  # Für später: Wenn das Notebook auch remote gemanaged werden soll
+  # children:
+  #   workstations:
+  #     hosts:
+  #       arch-notebook:
+  #         ansible_host: 192.168.1.100  # oder Hostname
+  #         ansible_user: lpalma
+  #         target_user: lpalma
+  #         deployment_mode: symlink
+  #         setup_root_config: true
+  #
+  #   servers:
+  #     vars:
+  #       deployment_mode: copy
+  #       setup_root_config: true
+  #     hosts:
+  #       docker-swarm-01:
+  #         ansible_host: 192.168.1.10
+  #         target_user: lpalma

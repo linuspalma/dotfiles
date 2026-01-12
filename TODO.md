@@ -25,3 +25,10 @@ roles hinzufügen:
 
   config File:
   src/funcs/drawing.nim
+
+- sshfs
+- nautilus
+- iperf3
+- hyprlock ?
+- iamb
+- swww

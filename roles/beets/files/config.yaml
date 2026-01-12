@@ -1,4 +1,4 @@
-directory: /mnt/nfs/music
+directory: /mnt/nfs/media/music
 library: ~/.config/beets/library.db
 
 import:
@@ -7,9 +7,27 @@ import:
   write: yes
   log: ~/.config/beets/import.log
 
-plugins: lyrics
+plugins: lyrics fetchart embedart chroma
 
 lyrics:
   auto: yes
-  sources: lrclib genius
-  synced: yes
+  # sources: lrclib genius musixmatch tekstowo google
+  # sources: lrclib tekstowo musixmatch genius
+  synced: no
+  sources: lrclib tekstowo musixmatch genius google
+  # synced: yes
+  genius_api_token: 9WjLtn9lWqTxJD0j0CBobSrjrz3b80A1TaIxuZKiF7h927Z0lcSkUY6O6LZSTTwD
+
+fetchart:
+  auto: yes
+  sources: coverart musicbrainz amazon
+
+embedart:
+  auto: yes
+
+match:
+  strong_rec_thresh: 0.10 # Standard ist 0.04 (höher = toleranter)
+  medium_rec_thresh: 0.25
+  max_rec:
+    missing_tracks: medium
+    unmatched_tracks: medium
