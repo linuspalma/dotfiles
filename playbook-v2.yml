@@ -1,0 +1,31 @@
+---
+# ===========================================
+#  Dotfiles Playbook v2 (Refactored)
+# ===========================================
+#
+# Nutzung:
+#   ansible-playbook playbook-v2.yml                     # Alles
+#   ansible-playbook playbook-v2.yml --tags client       # Nur Client-Roles
+#   ansible-playbook playbook-v2.yml --tags server       # Nur Server-Roles
+#   ansible-playbook playbook-v2.yml --tags nvim         # Nur nvim
+#
+# Variablen kommen aus:
+#   - group_vars/all/main.yml (defaults)
+#   - inventory.yml (pro Host überschreibbar)
+#
+
+- name: Setup dotfiles
+  hosts: all
+  become: no  # Default: KEIN root - Roles setzen become: yes wo nötig
+
+  roles:
+    # --- Core Tools (Server + Client) ---
+    - role: nvim
+      tags: [nvim, server, client]
+
+    # Weitere Roles hier hinzufügen wenn sie refactored sind:
+    # - role: zsh
+    #   tags: [zsh, server, client]
+    # - role: git
+    #   tags: [git, server, client]
+    # ...

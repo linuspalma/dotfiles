@@ -1,0 +1,25 @@
+---
+# ===========================================
+#  Zentrale Variablen für alle Hosts
+# ===========================================
+
+# Pfad zur dotfiles repo
+# Default: ~/.dotfiles - kann pro Host überschrieben werden
+dotfiles_path: "{{ ansible_facts['env']['HOME'] }}/.dotfiles"
+
+# Deployment Modus für Config-Dateien
+# 'symlink' = für Clients (Änderungen sofort sichtbar)
+# 'copy'    = für Server (eigenständige Kopie)
+deployment_mode: "copy"
+
+# Root-User auch konfigurieren?
+# Wenn true: Symlink von /root/.config/X -> User config
+# Damit funktioniert z.B. `sudo nvim /etc/fstab` mit der jeweiligen User-Config
+setup_root_config: true
+
+# Target User - wer bekommt die Configs?
+# Wird aus Inventory überschrieben, Fallback auf aktuellen User
+target_user: "{{ target_user | default(lookup('env', 'USER')) }}"
+
+# Home-Verzeichnis des Target Users
+target_user_home: "/home/{{ target_user }}"

@@ -1,0 +1,27 @@
+---
+# ===========================================
+#  nvim - Ubuntu Installation
+# ===========================================
+
+- name: Install neovim via snap
+  ansible.builtin.command:
+    cmd: snap install nvim --classic
+    creates: /snap/bin/nvim
+  become: yes
+  tags: [nvim]
+
+- name: Install nvim dependencies
+  ansible.builtin.package:
+    name:
+      - fd-find
+      - ripgrep
+      - nodejs
+      - npm
+      - unzip
+      - python3-venv
+      - build-essential   # treesitter
+      - gcc               # treesitter
+      - git
+    state: present
+  become: yes
+  tags: [nvim]

@@ -1,0 +1,29 @@
+---
+# ===========================================
+#  nvim - Fedora Installation
+# ===========================================
+
+- name: Install neovim
+  ansible.builtin.dnf:
+    name:
+      - neovim
+      - python3-neovim
+    state: present
+  become: yes
+  tags: [nvim]
+
+- name: Install nvim dependencies
+  ansible.builtin.dnf:
+    name:
+      - fd-find
+      - ripgrep
+      - nodejs
+      - npm
+      - unzip
+      - gcc           # treesitter
+      - gcc-c++       # treesitter
+      - make          # treesitter
+      - git
+    state: present
+  become: yes
+  tags: [nvim]

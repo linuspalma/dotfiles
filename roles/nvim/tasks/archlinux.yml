@@ -1,0 +1,34 @@
+---
+# ===========================================
+#  nvim - Arch Linux Installation
+# ===========================================
+
+- name: Install neovim
+  ansible.builtin.package:
+    name: neovim
+    state: present
+  become: yes
+  tags: [nvim]
+
+- name: Install nvim dependencies (telescope, treesitter)
+  ansible.builtin.package:
+    name:
+      - fd
+      - ripgrep
+      - nodejs
+      - npm
+      - unzip
+      - gcc        # treesitter
+      - make       # treesitter
+    state: present
+  become: yes
+  tags: [nvim]
+
+- name: Install snacks.nvim dependencies (image preview)
+  ansible.builtin.package:
+    name:
+      - imagemagick
+      - ghostscript
+    state: present
+  become: yes
+  tags: [nvim]

@@ -1,0 +1,48 @@
+---
+# ===========================================
+#  nvim - Debian Installation
+# ===========================================
+
+- name: Install neovim via AppImage
+  block:
+    - name: Create /opt/nvim directory
+      ansible.builtin.file:
+        path: /opt/nvim
+        state: directory
+        mode: "0755"
+      become: yes
+
+    - name: Download nvim AppImage
+      ansible.builtin.get_url:
+        url: https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
+        dest: /opt/nvim/nvim
+        mode: "0755"
+      become: yes
+      register: nvim_download
+      args:
+        creates: /opt/nvim/nvim
+
+    - name: Create symlink to /usr/local/bin
+      ansible.builtin.file:
+        src: /opt/nvim/nvim
+        dest: /usr/local/bin/nvim
+        state: link
+      become: yes
+  tags: [nvim]
+
+- name: Install nvim dependencies
+  ansible.builtin.package:
+    name:
+      - fd-find
+      - ripgrep
+      - nodejs
+      - npm
+      - unzip
+      - python3-venv
+      - python3-pip
+      - build-essential   # treesitter
+      - gcc               # treesitter
+      - git
+    state: present
+  become: yes
+  tags: [nvim]

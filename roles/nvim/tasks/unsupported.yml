@@ -1,0 +1,19 @@
+---
+# ===========================================
+#  nvim - Unsupported Distribution
+# ===========================================
+
+- name: Warn about unsupported distribution
+  ansible.builtin.fail:
+    msg: |
+      Distribution '{{ ansible_distribution }}' ({{ ansible_os_family }})
+      is not supported for the nvim role.
+
+      Supported distributions:
+        - Archlinux
+        - Ubuntu
+        - Debian
+        - Fedora
+
+      To add support, create: roles/nvim/tasks/{{ ansible_distribution | lower }}.yml
+  tags: [nvim]
