@@ -3,10 +3,14 @@
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 # würde es erlauben, bei einem rezize fastfetch nochmal auszuführen...
 #TRAPWINCH() {
 #fastfetch
 #}
+
 _run_fastfetch(){
   if [[ $COLUMNS -gt 128 ]]; then
   fastfetch

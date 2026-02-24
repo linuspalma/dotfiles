@@ -14,7 +14,7 @@ return {
 					"lua_ls",
 					"ts_ls",
 					"html",
-					"svelte-language-server",
+					"svelte",
 					"pyright",
 					"ansiblels",
 					"bashls",
