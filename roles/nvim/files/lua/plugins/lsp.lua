@@ -13,6 +13,8 @@ return {
 				ensure_installed = {
 					"lua_ls",
 					"ts_ls",
+					"html",
+					"svelte-language-server",
 					"pyright",
 					"ansiblels",
 					"bashls",
@@ -115,6 +117,8 @@ return {
 			-- Server aktivieren
 			vim.lsp.enable("lua_ls")
 			vim.lsp.enable("ts_ls")
+			vim.lsp.enable("html")
+			vim.lsp.enable("svelte")
 			vim.lsp.enable("pyright")
 			vim.lsp.enable("ansiblels")
 			vim.lsp.enable("bashls")

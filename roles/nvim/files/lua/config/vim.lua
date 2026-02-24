@@ -25,3 +25,7 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = " Zeile nach oben" })
 vim.opt.breakindent = true
 vim.opt.breakindentopt = "shift:2"
 vim.opt.showbreak = "↪ "
+
+vim.o.backup = true
+vim.opt.backupcopy = "yes"
+vim.opt.backupdir = vim.fn.stdpath("state") .. "/backup//"

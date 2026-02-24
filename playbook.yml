@@ -30,7 +30,7 @@
     - ashell
     - hyprland
     - hyprlock
-    - nvim
+    # - nvim
     - lazygit
     - kitty
     - ssh
@@ -49,5 +49,5 @@
     - mpd
     - moonlight
     - modemmanager
-    - tmux
+    # - tmux
     - feishin

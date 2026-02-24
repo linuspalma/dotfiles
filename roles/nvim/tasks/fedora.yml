@@ -5,25 +5,29 @@
 
 - name: Install neovim
   ansible.builtin.dnf:
+    # ansible.builtin.package:
     name:
       - neovim
       - python3-neovim
     state: present
+    use_backend: dnf4
   become: yes
   tags: [nvim]
 
 - name: Install nvim dependencies
   ansible.builtin.dnf:
+    # ansible.builtin.package:
     name:
       - fd-find
       - ripgrep
       - nodejs
       - npm
       - unzip
-      - gcc           # treesitter
-      - gcc-c++       # treesitter
-      - make          # treesitter
+      - gcc # treesitter
+      - gcc-c++ # treesitter
+      - make # treesitter
       - git
     state: present
+    use_backend: dnf4
   become: yes
   tags: [nvim]

@@ -7,6 +7,13 @@ all:
       deployment_mode: symlink
       setup_root_config: true
 
+    fed-py-dev:
+      ansible_host: 10.10.20.151
+      deployment_mode: copy
+      setup_root_config: false
+      target_user: lpalma
+      ansible_user: lpalma
+
   # Für später: Wenn das Notebook auch remote gemanaged werden soll
   # children:
   #   workstations:
