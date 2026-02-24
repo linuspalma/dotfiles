@@ -2,28 +2,44 @@ directory: /mnt/nfs/media/music
 library: ~/.config/beets/library.db
 
 import:
-  move: no
-  copy: yes
+  move: yes
+  copy: no
   write: yes
   log: ~/.config/beets/import.log
 
-plugins: lyrics fetchart embedart chroma
+plugins: info musicbrainz lyrics fetchart embedart chroma edit
+
+# lyrics:
+#   auto: yes
+#   # sources: lrclib genius musixmatch tekstowo google
+#   # sources: lrclib tekstowo musixmatch genius
+#   synced: no
+#   sources: lrclib #genius #google
+#   # synced: yes
+#   # genius_api_key: 9WjLtn9lWqTxJD0j0CBobSrjrz3b80A1TaIxuZKiF7h927Z0lcSkUY6O6LZSTTwD
+#   dist_thresh: 0.5
 
 lyrics:
   auto: yes
-  # sources: lrclib genius musixmatch tekstowo google
-  # sources: lrclib tekstowo musixmatch genius
-  synced: no
-  sources: lrclib tekstowo musixmatch genius google
-  # synced: yes
-  genius_api_token: 9WjLtn9lWqTxJD0j0CBobSrjrz3b80A1TaIxuZKiF7h927Z0lcSkUY6O6LZSTTwD
+  synced: yes
+  sources:
+    - lrclib
+    # - genius
+  # genius_api_key: "9WjLtn9lWqTxJD0j0CBobSrjrz3b80A1TaIxuZKiF7h927Z0lcSkUY6O6LZSTTwD"
+  dist_thresh: 0.5
 
 fetchart:
   auto: yes
-  sources: coverart musicbrainz amazon
+  sources:
+    - coverart
+    - musicbrainz
+    - amazon
+    - itunes
+  maxwidth: 600
 
 embedart:
   auto: yes
+  maxwidth: 600
 
 match:
   strong_rec_thresh: 0.10 # Standard ist 0.04 (höher = toleranter)
