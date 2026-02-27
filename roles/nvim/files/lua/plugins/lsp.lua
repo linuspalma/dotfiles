@@ -14,6 +14,7 @@ return {
 					"lua_ls",
 					"ts_ls",
 					"html",
+					"cssls",
 					"svelte",
 					"pyright",
 					"ansiblels",
@@ -118,6 +119,7 @@ return {
 			vim.lsp.enable("lua_ls")
 			vim.lsp.enable("ts_ls")
 			vim.lsp.enable("html")
+			vim.lsp.enable("cssls")
 			vim.lsp.enable("svelte")
 			vim.lsp.enable("pyright")
 			vim.lsp.enable("ansiblels")
