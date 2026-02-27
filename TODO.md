@@ -30,5 +30,12 @@ roles hinzufügen:
 - nautilus
 - iperf3
 - hyprlock ?
-- iamb
+- iamb --> wichtig + config!
 - swww
+- imv --> image viewr
+
+for typing:
+
+- ttyper pacman -S ttyper
+- gtypist --> tutor yay -S gtypist
+- thokr --> sher minimalistisch yay
