@@ -22,6 +22,7 @@ return {
 					-- "yamlls",
 					"marksman",
 					"docker_language_server",
+					"jinja_lsp",
 				},
 				automatic_installation = true,
 			})
@@ -114,6 +115,12 @@ return {
 					},
 				},
 			})
+
+			-- Jinja LSP Config
+			vim.lsp.config("jinja_lsp", {
+				filetypes = { "jinja", "yaml.jinja" },
+			})
+			vim.lsp.enable("jinja_lsp")
 
 			-- Server aktivieren
 			vim.lsp.enable("lua_ls")

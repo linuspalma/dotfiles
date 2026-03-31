@@ -20,6 +20,7 @@
       - unzip
       - gcc        # treesitter
       - make       # treesitter
+      - rust       # jinja-lsp
     state: present
   become: yes
   tags: [nvim]

@@ -6,6 +6,10 @@
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
+# Keychain: manage a single ssh-agent per system boot
+# First terminal after boot: PIN + tap, all subsequent: tap only
+eval $(keychain --eval id_ed25519_sk_l01)
+
 # würde es erlauben, bei einem rezize fastfetch nochmal auszuführen...
 #TRAPWINCH() {
 #fastfetch
@@ -135,6 +139,7 @@ plugins=(
     )
 
 source $ZSH/oh-my-zsh.sh
+source ~/.cargo/env
 
 # User configuration
 
