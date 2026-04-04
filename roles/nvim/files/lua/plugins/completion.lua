@@ -8,8 +8,8 @@ return {
 				["<Tab>"] = { "select_next", "fallback" },
 				["<S-Tab>"] = { "select_prev", "fallback" },
 			},
-			apperence = {
-				nerd_font_vartiant = "mono",
+			appearance = {
+				nerd_font_variant = "mono",
 			},
 			completion = {
 				documentation = {
@@ -17,7 +17,7 @@ return {
 					-- auto_show_delay_ms = 300,
 				},
 			},
-			signature = { enable = true },
+			signature = { enabled = true },
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer" },
 			},
