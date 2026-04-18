@@ -1,0 +1,6 @@
+---
+- name: uninstall btop++
+  package:
+    name: "{{ btop_package }}"
+    state: absent
+  become: yes
