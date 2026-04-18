@@ -1,0 +1,6 @@
+---
+- name: install btop++
+  package:
+    name: "{{ btop_package }}"
+    state: present
+  become: yes

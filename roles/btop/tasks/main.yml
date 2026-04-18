@@ -1,8 +1,10 @@
 ---
-- name: install btop++
-  package:
-    name: btop
-    state: present
-  become: yes
-  tags: [client, server]
-  when: ansible_facts['distribution'] in ["Archlinux"]
+- name: load distribution specific vars (if any)
+  ansible.builtin.include_vars: "{{ item }}"
+  when_first_found:
+    - files: ["{{ ansible_os_family | lower }}.yml"]
+      paths: ["vars"]
+      skip: true
+
+- name: dispach operation
+  ansible.builtin.include_tasks: "{{ op | default('install')}}.yml"

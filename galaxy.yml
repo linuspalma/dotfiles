@@ -1,0 +1,21 @@
+namespace: lpalma
+name: dotfiles
+version: 0.1.0
+readme: README.md
+authors: [lpalma]
+description: setup / dotfiles via ansible for clients and server
+license: [MIT]
+repository: https://github.com/linuspalma/dotfiles
+
+build_ignore:
+  - .git
+  - .github
+  - .gitignore
+  - .claude
+  - .vscode
+  - docs
+  - pb
+  - inventories
+  - ansible.cfg
+  - "*.pyc"
+  - "__pychache__"
