@@ -1,7 +1,7 @@
 ---
 - name: load distribution specific vars (if any)
   ansible.builtin.include_vars: "{{ item }}"
-  when_first_found:
+  with_first_found:
     - files: ["{{ ansible_os_family | lower }}.yml"]
       paths: ["vars"]
       skip: true

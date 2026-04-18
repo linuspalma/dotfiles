@@ -19,3 +19,5 @@ build_ignore:
   - ansible.cfg
   - "*.pyc"
   - "__pychache__"
+  - inventory.yml
+  - group_vars
