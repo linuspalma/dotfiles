@@ -1,0 +1,30 @@
+---
+- name: check if multilib repo is already enabled
+  ansible.builtin.command: grep -Pq '^\[multilib\]' /etc/pacman.conf
+  register: steam_multilib_check
+  failed_when: false
+  changed_when: false
+  check_mode: no
+
+- name: enable multilib repo
+  ansible.builtin.blockinfile:
+    path: /etc/pacman.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - multilib"
+    block: |
+      [multilib]
+      Include = /etc/pacman.d/mirrorlist
+  when: steam_multilib_check.rc != 0
+  register: steam_multilib_repo
+  become: yes
+
+- name: refresh pacman db
+  community.general.pacman:
+    update_cache: yes
+  when: steam_multilib_repo.changed
+  become: yes
+
+- name: install steam and runtime dependencies
+  community.general.pacman:
+    name: "{{ steam_packages }}"
+    state: present
+  become: yes

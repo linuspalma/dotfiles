@@ -1,0 +1,10 @@
+---
+- name: load distribution specific vars (if any)
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - files: ["{{ ansible_os_family | lower }}.yml"]
+      paths: ["vars"]
+      skip: true
+
+- name: dispach operation
+  ansible.builtin.include_tasks: "{{ op | default('deploy')}}.yml"
