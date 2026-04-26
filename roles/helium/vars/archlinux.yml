@@ -1,0 +1,4 @@
+---
+# helium browser ist nur im AUR; paru wird als helper benutzt.
+helium_packages:
+  - helium-browser-bin

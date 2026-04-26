@@ -1,0 +1,6 @@
+---
+- name: install helium browser via paru (aur)
+  kewlfft.aur.aur:
+    name: "{{ helium_packages }}"
+    use: paru
+    state: present
