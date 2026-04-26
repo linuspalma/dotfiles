@@ -7,4 +7,4 @@
       skip: true
 
 - name: dispach operation
-  ansible.builtin.include_tasks: "{{ op | default('install')}}.yml"
+  ansible.builtin.include_tasks: "{{ op | default('deploy')}}.yml"
