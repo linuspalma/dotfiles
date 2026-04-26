@@ -1,0 +1,12 @@
+---
+sunshine_allowed_networks:
+  - 10.10.0.0/16
+
+sunshine_ufw_rules:
+  - { proto: tcp, port: "47984:47990" }
+  - { proto: tcp, port: "48010" }
+  - { proto: udp, port: "47998:48000" }
+  - { proto: udp, port: "48002" }
+
+sunshine_autologin_user: lpalma
+sunshine_autologin_session: hyprland-uwsm

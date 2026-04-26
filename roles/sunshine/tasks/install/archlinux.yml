@@ -1,0 +1,83 @@
+---
+- name: add LizardByte pacman repo
+  ansible.builtin.blockinfile:
+    path: /etc/pacman.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - lizardbyte"
+    block: |
+      [lizardbyte]
+      SigLevel = Optional
+      Server = https://github.com/LizardByte/pacman-repo/releases/latest/download
+  register: lizardbyte_repo
+  become: yes
+
+- name: refresh pacman db
+  community.general.pacman:
+    update_cache: yes
+  when: lizardbyte_repo.changed
+  become: yes
+
+- name: install sunshine and uwsm
+  community.general.pacman:
+    name:
+      - sunshine
+      - uwsm
+    state: present
+  become: yes
+
+- name: allow sunshine ports via ufw
+  community.general.ufw:
+    rule: allow
+    from_ip: "{{ item.0 }}"
+    proto: "{{ item.1.proto }}"
+    port: "{{ item.1.port }}"
+  loop: "{{ sunshine_allowed_networks | product(sunshine_ufw_rules) | list }}"
+  become: yes
+
+- name: ensure sddm conf.d directory exists
+  ansible.builtin.file:
+    path: /etc/sddm.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  become: yes
+
+- name: configure sddm autologin so sunshine has a session to capture
+  ansible.builtin.template:
+    src: sddm-autologin.conf.j2
+    dest: /etc/sddm.conf.d/10-autologin.conf
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+
+- name: remove legacy sunshine system unit
+  ansible.builtin.file:
+    path: /etc/systemd/system/sunshine.service
+    state: absent
+  become: yes
+  register: sunshine_legacy_unit
+
+- name: reload systemd if legacy unit was removed
+  ansible.builtin.systemd_service:
+    daemon_reload: yes
+  when: sunshine_legacy_unit.changed
+  become: yes
+
+- name: enable lingering so sunshine user service runs at boot
+  ansible.builtin.command: "loginctl enable-linger {{ sunshine_autologin_user }}"
+  args:
+    creates: "/var/lib/systemd/linger/{{ sunshine_autologin_user }}"
+  become: yes
+
+- name: check sunshine user service state for autologin user
+  ansible.builtin.command: "systemctl --machine={{ sunshine_autologin_user }}@.host --user is-enabled sunshine.service"
+  register: sunshine_user_state
+  changed_when: false
+  failed_when: false
+  become: yes
+
+- name: enable sunshine user service for autologin user
+  ansible.builtin.command: "systemctl --machine={{ sunshine_autologin_user }}@.host --user enable sunshine.service"
+  when: sunshine_user_state.stdout.strip() != 'enabled'
+  become: yes
