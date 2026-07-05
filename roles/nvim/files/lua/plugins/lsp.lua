@@ -74,21 +74,25 @@ return {
 		"neovim/nvim-lspconfig",
 		dependencies = { "williamboman/mason-lspconfig.nvim" },
 		config = function()
-			-- Diagnostics Icons
-			local signs = {
-				Error = "󰅚 ",
-				Warn = "󰀪 ",
-				Hint = "󰌶 ",
-				Info = " ",
-			}
-			for type, icon in pairs(signs) do
-				local hl = "DiagnosticSign" .. type
-				vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-			end
 			-- Diagnostics Config
 			vim.diagnostic.config({
 				virtual_lines = {
 					current_line = true,
+				},
+				signs = {
+					text = {
+						-- ●
+						[vim.diagnostic.severity.ERROR] = "󰅚 ",
+						[vim.diagnostic.severity.WARN] = "󰀪 ",
+						[vim.diagnostic.severity.HINT] = "󰌶 ",
+						[vim.diagnostic.severity.INFO] = " ",
+					},
+					numhl = {
+						[vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+						[vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+						[vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
+						[vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+					},
 				},
 			})
 
@@ -100,9 +104,12 @@ return {
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 					vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-					vim.keymap.set("n", "<leader>f", function()
-						require("conform").format({ async = true, lsp_fallback = true })
-					end, opts)
+					vim.keymap.set(
+						"n",
+						"<leader>f",
+						function() require("conform").format({ async = true, lsp_fallback = true }) end,
+						opts
+					)
 				end,
 			})
 
