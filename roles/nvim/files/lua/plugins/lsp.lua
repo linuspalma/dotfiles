@@ -63,6 +63,9 @@ return {
 					"prettier",
 					"stylua",
 					"black",
+					-- nvim-treesitter (main branch) kompiliert Parser aus Quellcode
+					-- und braucht dafür die tree-sitter CLI.
+					"tree-sitter-cli",
 				},
 			})
 		end,

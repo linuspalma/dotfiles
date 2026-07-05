@@ -4,21 +4,41 @@ return {
 	lazy = false,
 	build = ":TSUpdate",
 	config = function()
-		require("nvim-treesitter").setup({
-			ensure_installed = { "markdown", "lua" },
-			auto_install = true,
-			ignore_install = { "javascript" },
+		local ts = require("nvim-treesitter")
+
+		-- main branch: setup() nimmt KEINE ensure_installed/auto_install/ignore_install mehr.
+		ts.setup()
+
+		-- Parser installieren (main branch: über install(), nicht über setup()).
+		-- Wichtig, sonst nutzt Neovim seinen älteren gebündelten Parser -> passt nicht
+		-- zu den neueren Queries von nvim-treesitter ("Invalid field name ...").
+		ts.install({
+			"lua",
+			"markdown",
+			"markdown_inline",
+			"bash",
+			"yaml",
+			"python",
+			"json",
+			"vim",
+			"vimdoc",
 		})
 
-		-- Jinja files: Treesitter-YAML-Parser kann {% %} nicht parsen
+		-- main branch startet Highlighting NICHT automatisch -> per FileType starten.
 		vim.api.nvim_create_autocmd("FileType", {
-			pattern = { "jinja", "yaml.jinja" },
 			callback = function(args)
-				vim.treesitter.stop(args.buf)
+				local ft = vim.bo[args.buf].filetype
+
+				-- Jinja: Treesitter-YAML-Parser kann {% %} nicht parsen -> aus lassen.
+				if ft == "jinja" or ft == "yaml.jinja" then
+					return
+				end
+
+				pcall(vim.treesitter.start, args.buf)
 			end,
 		})
 
-		-- Disable treesitter for large files (>100KB)
+		-- Große Dateien (>100KB): kein Treesitter.
 		vim.api.nvim_create_autocmd("BufReadPost", {
 			callback = function(args)
 				local max_filesize = 100 * 1024
