@@ -12,13 +12,43 @@
     state: directory
   tags: [client]
 
-- name: Hyprland config symlink
+- name: Remove existing Hyprland config links
   file:
-    src: "/home/{{ target_user }}/.dotfiles/roles/hyprland/files/hyprland.conf"
-    dest: "/home/{{ target_user }}/.config/hypr/hyprland.conf"
+    path: "/home/{{ target_user }}/.config/hypr/{{ item }}"
+    state: absent
+  loop:
+    - hyprland.conf
+    - hyprland.lua
+    - lua
+  tags: [client]
+  become: yes
+
+# - name: Hyprland config symlink
+#   file:
+#     src: "/home/{{ target_user }}/.dotfiles/roles/hyprland/files/conf/hyprland.conf"
+#     dest: "/home/{{ target_user }}/.config/hypr/hyprland.conf"
+#     state: link
+#     force: yes
+#   tags: [client]
+#   become: yes
+
+- name: Symlink Hyprland lua entry point
+  file:
+    src: "{{ role_path }}/files/lua/hyprland.lua"
+    dest: "/home/{{ target_user }}/.config/hypr/hyprland.lua"
     state: link
     force: yes
   tags: [client]
+  become: yes
+
+- name: symlink hyprland lua config
+  file:
+    src: "{{ role_path }}/files/lua/modules"
+    dest: "/home/{{ target_user }}/.config/hypr/lua"
+    state: link
+    force: yes
+  tags: [client]
+  become: yes
 
 - name: insstall xdg-desktop-portal
   package:
