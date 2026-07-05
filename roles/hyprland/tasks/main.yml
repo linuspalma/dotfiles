@@ -3,6 +3,8 @@
   package:
     name:
       - hyprland
+      - hyprcursor
+      - hyprlauncher
     state: present
   tags: [client]
 
@@ -19,7 +21,7 @@
   loop:
     - hyprland.conf
     - hyprland.lua
-    - lua
+    - modules
   tags: [client]
   become: yes
 
@@ -41,10 +43,10 @@
   tags: [client]
   become: yes
 
-- name: symlink hyprland lua config
+- name: symlink hyprland lua modules
   file:
     src: "{{ role_path }}/files/lua/modules"
-    dest: "/home/{{ target_user }}/.config/hypr/lua"
+    dest: "/home/{{ target_user }}/.config/hypr/modules"
     state: link
     force: yes
   tags: [client]
