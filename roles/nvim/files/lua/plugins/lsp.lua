@@ -24,7 +24,8 @@ return {
 					"docker_language_server",
 					"jinja_lsp",
 				},
-				automatic_installation = true,
+				-- automatic_enable = true ist v2-Default -> installierte Server werden
+				-- automatisch via vim.lsp.enable() aktiviert. Kein manuelles enable nötig.
 			})
 		end,
 	},
@@ -85,7 +86,7 @@ return {
 						[vim.diagnostic.severity.ERROR] = "󰅚 ",
 						[vim.diagnostic.severity.WARN] = "󰀪 ",
 						[vim.diagnostic.severity.HINT] = "󰌶 ",
-						[vim.diagnostic.severity.INFO] = " ",
+						[vim.diagnostic.severity.INFO] = " ",
 					},
 					numhl = {
 						[vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
@@ -126,24 +127,12 @@ return {
 				},
 			})
 
-			-- Jinja LSP Config
+			-- Jinja LSP: nur die Filetypes überschreiben, damit er auch bei
+			-- yaml.jinja greift (Default ist nur "jinja"). Das *Aktivieren*
+			-- aller Server übernimmt mason-lspconfig via automatic_enable.
 			vim.lsp.config("jinja_lsp", {
 				filetypes = { "jinja", "yaml.jinja" },
 			})
-			vim.lsp.enable("jinja_lsp")
-
-			-- Server aktivieren
-			vim.lsp.enable("lua_ls")
-			vim.lsp.enable("ts_ls")
-			vim.lsp.enable("html")
-			vim.lsp.enable("cssls")
-			vim.lsp.enable("svelte")
-			vim.lsp.enable("pyright")
-			vim.lsp.enable("ansiblels")
-			vim.lsp.enable("bashls")
-			-- vim.lsp.enable("yamlls")
-			vim.lsp.enable("marksman")
-			vim.lsp.enable("docker_language_server")
 		end,
 	},
 }
