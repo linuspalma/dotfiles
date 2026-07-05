@@ -5,6 +5,7 @@
       - hyprland
       - hyprcursor
       - hyprlauncher
+      - hyprpolkitagent
     state: present
   tags: [client]
 

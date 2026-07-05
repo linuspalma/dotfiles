@@ -15,13 +15,13 @@
 
 -- Set programs that you use
 -- NOTE: global (no `local`) so split-out files like main/keybinds can read them.
-terminal = "kitty"
+Terminal = "kitty"
 --fileManager = "dolphin"
-fileManager = "nautilus"
-menu = "hyprlauncher"
+FileManager = "nautilus"
+Menu = "hyprlauncher"
 -- menu = "rofi --show drun"
-statusbar = "waybar"
-browser = "brave"
+Statusbar = "waybar"
+Browser = "brave"
 
 -- Split-out config lives in files/lua/modules/, deployed to ~/.config/hypr/modules/.
 -- Requires the programs above, so load it after they're defined.
