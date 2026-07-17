@@ -23,6 +23,22 @@ Menu = "hyprlauncher"
 Statusbar = "waybar"
 Browser = "brave"
 
+-- Waybar nach Monitorwechsel neu starten (sonst rutscht die Bar in die Mitte).
+RestartBar = "pkill waybar; sleep 0.4; waybar"
+
+-- eDP-1 aus, wenn ein externer Monitor aktiv ist, sonst an. Nie 0 Monitore ->
+-- kein Freeze beim Boot/Kabelziehen. Idempotent, läuft bei Hotplug + Boot.
+ReconcileMonitors = table.concat({
+	"sleep 0.3;",
+	"if hyprctl monitors | grep '^Monitor ' | grep -qv 'Monitor eDP-1'; then",
+	"  hyprctl monitors | grep -q 'Monitor eDP-1' &&",
+	"    { hyprctl keyword monitor 'eDP-1, disable'; " .. RestartBar .. "; };",
+	"else",
+	"  hyprctl monitors | grep -q 'Monitor eDP-1' ||",
+	"    { hyprctl keyword monitor 'eDP-1, 1920x1080, 0x0, 1'; hyprctl dispatch dpms on eDP-1; " .. RestartBar .. "; };",
+	"fi",
+}, " ")
+
 -- Split-out config lives in files/lua/modules/, deployed to ~/.config/hypr/modules/.
 -- Requires the programs above, so load it after they're defined.
 require("modules.monitor")
