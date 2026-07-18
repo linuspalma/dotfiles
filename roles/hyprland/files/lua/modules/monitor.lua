@@ -40,19 +40,46 @@ local function lid_closed()
 	return s:find("closed") ~= nil
 end
 
-local function reconcile()
-	local closed = lid_closed()
+-- closed: optional. Lid-Binds geben den Zustand explizit rein -- der Kernel-ACPI-
+-- Status in /proc hinkt dem Switch-Event hinterher, Polling beim Lid-Event wuerde
+-- racen (Oeffnen liest noch "closed" -> dpms bliebe aus). Sonst (Boot/Hotplug)
+-- wird /proc gelesen.
+--
+-- dpms-Handling (Wiki: Dispatchers + Expanding functionality / Prop Refresh):
+-- 1. hl.monitor()-Aenderungen werden erst am ENDE des laufenden Lua-Events
+--    angewendet (Prop Refresh). Ein dpms direkt nach dem Enable traefe einen
+--    noch disableten Output und verpufft -- Hyprlands DPMS-Status desynct,
+--    spaetere "on"-Aufrufe werden No-ops (Panel bleibt schwarz). Darum wird
+--    der Refresh sofort ausgefuehrt.
+-- 2. dpms direkt aus einem Bind ist laut Doku undefined behavior -- darum
+--    entkoppelt ueber oneshot-Timer (500ms, Wiki-Empfehlung).
+-- want_closed statt Closure-Capture: kommt binnen 500ms ein neues Lid-Event,
+-- wendet auch ein "alter" Timer den neuesten Zustand an.
+local want_closed = false
+
+local function reconcile(closed)
+	if closed == nil then
+		closed = lid_closed()
+	end
 	if external_present() and closed then
 		hl.monitor({ output = "eDP-1", disabled = true })
 	else
 		hl.monitor({ output = "eDP-1", mode = "preferred", position = "0x0", scale = "auto", disabled = false })
-		hl.dispatch(hl.dsp.dpms({ action = closed and "off" or "on", monitor = "eDP-1" }))
+		hl.exec_scheduled_prop_refresh_immediately()
+		want_closed = closed
+		hl.timer(function()
+			hl.dispatch(hl.dsp.dpms({ action = want_closed and "off" or "on", monitor = "eDP-1" }))
+		end, { timeout = 500, type = "oneshot" })
 	end
 end
 
-hl.on("hyprland.start", reconcile) -- Boot (auch zugeklappt am Dock)
-hl.on("config.reloaded", reconcile) -- hyprctl reload
-hl.on("monitor.added", reconcile) -- Dock/Kabel rein
-hl.on("monitor.removed", reconcile) -- Dock/Kabel raus
-hl.bind("switch:on:Lid Switch", function() reconcile() end, { locked = true }) -- Lid zu
-hl.bind("switch:off:Lid Switch", function() reconcile() end, { locked = true }) -- Lid auf
+-- WICHTIG: Event-Handler gekapselt aufrufen -- hl.on uebergibt dem Callback ein
+-- Argument (z.B. den Monitor bei monitor.added). Direkt als `reconcile` wuerde das
+-- als `closed` ankommen und faelschlich als "zugeklappt" interpretiert.
+-- config.reloaded ist BEWUSST NICHT registriert: es feuert beim Kaltstart waehrend
+-- initManagers, bevor CPointerManager existiert -> dpms() => SEGV => kein Start.
+hl.on("hyprland.start", function() reconcile() end) -- Boot (auch zugeklappt am Dock)
+hl.on("monitor.added", function() reconcile() end) -- Dock/Kabel rein
+hl.on("monitor.removed", function() reconcile() end) -- Dock/Kabel raus
+hl.bind("switch:on:Lid Switch", function() reconcile(true) end, { locked = true }) -- Lid zu
+hl.bind("switch:off:Lid Switch", function() reconcile(false) end, { locked = true }) -- Lid auf
