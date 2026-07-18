@@ -73,7 +73,22 @@ hl.bind(
 	hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),
 	{ locked = true, repeating = true }
 )
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"), { locked = true, repeating = true })
+-- Fn+F4 ist zugleich Rettungsanker fuer ein schwarzes eDP-1 (Panel wurde bei
+-- zugeklappter Lid re-enabled -> Backlight bleibt aus): zusaetzlich zur
+-- Helligkeit wird dpms on + ein erzwungener Modeset dispatcht. Timer wegen
+-- dpms-aus-Bind-UB (Wiki), wake_pending verhindert Timer-Flut bei repeating.
+local wake_pending = false
+hl.bind("XF86MonBrightnessUp", function()
+	hl.dispatch(hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"))
+	if not wake_pending then
+		wake_pending = true
+		hl.timer(function()
+			wake_pending = false
+			hl.dispatch(hl.dsp.dpms({ action = "on", monitor = "eDP-1" }))
+			hl.dispatch(hl.dsp.force_renderer_reload())
+		end, { timeout = 500, type = "oneshot" })
+	end
+end, { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"), { locked = true, repeating = true })
 
 -- Requires playerctl

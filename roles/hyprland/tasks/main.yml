@@ -6,6 +6,7 @@
       - hyprcursor
       - hyprlauncher
       - hyprpolkitagent
+      - brightnessctl
     state: present
   tags: [client]
 
