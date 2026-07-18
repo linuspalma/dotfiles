@@ -1,6 +1,0 @@
-- name: Setup dotfiles
-  hosts: all
-  # become: yes
-
-  roles:
-    - claude

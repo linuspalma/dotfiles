@@ -1,31 +1,45 @@
 ---
 # ===========================================
-#  Dotfiles Playbook v2 (Refactored)
+#  Dotfiles Playbook v2
 # ===========================================
 #
 # Nutzung:
-#   ansible-playbook playbook-v2.yml                     # Alles
-#   ansible-playbook playbook-v2.yml --tags client       # Nur Client-Roles
-#   ansible-playbook playbook-v2.yml --tags server       # Nur Server-Roles
-#   ansible-playbook playbook-v2.yml --tags nvim         # Nur nvim
+#   ansible-playbook pb/playbook-v2.yml -t btop -e op=remove          # entfernt btop
+#   ansible-playbook pb/playbook-v2.yml -l arch_book                  # deployed alles auf arch_book
+#   ansible-playbook pb/playbook-v2.yml -t nvim                       # deployed nvim
+#   ansible-playbook pb/playbook-v2.yml -t btop -e install_tuis=true  # installiert btop, auch wenn außerhalb des scopes vom host
 #
 # Variablen kommen aus:
 #   - group_vars/all/main.yml (defaults)
+#   - group_vars/gui.yml
+#   - group_vars/headless.yml                                          # legt fest welche roles installiert werden können
 #   - inventory.yml (pro Host überschreibbar)
-#
 
 - name: Setup dotfiles
   hosts: all
-  become: no  # Default: KEIN root - Roles setzen become: yes wo nötig
+  become: no
 
-  roles:
-    # --- Core Tools (Server + Client) ---
-    - role: nvim
-      tags: [nvim, server, client]
+  # roles:
+  #   # --- clis ---
+  #   - role: nvim
+  #     tags: [nvim]
+  #     when: install_clis
+  #   - role: btop
+  #     tags: [btop]
+  #     when: install_clis
+  #   - role: token2
+  #     tags: [token2, client]
+  #     when: install_clis
 
-    # Weitere Roles hier hinzufügen wenn sie refactored sind:
-    # - role: zsh
-    #   tags: [zsh, server, client]
-    # - role: git
-    #   tags: [git, server, client]
-    # ...
+  tasks:
+    # --- clis ---
+    - name: CLI roles
+      when: install_clis
+      tags: [cli]
+      block:
+        - import_role:
+            name: nvim
+          tags: [nvim]
+        - import_role:
+            name: btop
+          tags: [btop]

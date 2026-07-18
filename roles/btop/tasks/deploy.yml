@@ -1,6 +1,40 @@
 ---
-- name: install btop++
-  package:
-    name: "{{ btop_package }}"
-    state: present
+# --------------------------------
+# installation
+# --------------------------------
+
+- name: Install btop
+  ansible.builtin.include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_facts['distribution'] | lower }}.yml"
+        - "{{ ansible_facts['os_familiy'] | lower }}.yml"
+        - "unsupported.yml"
+      paths: ["install"]
+# --------------------------------
+# config deployment
+# --------------------------------
+
+- name: remove staling config
+  ansible.builtin.file:
+    path: "/home/{{ target_user }}/.config/btop"
+    state: absent
+  become: yes
+
+- name: ensure .config directory exists
+  ansible.builtin.file:
+    path: "/home/{{ target_user }}/.config/btop"
+    state: directory
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: "0755"
+  become: yes
+
+- name: deploy config
+  ansible.builtin.copy:
+    src: files/btop.conf
+    dest: "/home/{{ target_user }}/.config/btop/btop.conf"
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: preserve
   become: yes
