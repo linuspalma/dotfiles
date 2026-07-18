@@ -12,7 +12,6 @@
     state: present
     use_backend: dnf4
   become: yes
-  tags: [nvim]
 
 - name: Install nvim dependencies
   ansible.builtin.dnf:
@@ -30,4 +29,3 @@
     state: present
     use_backend: dnf4
   become: yes
-  tags: [nvim]

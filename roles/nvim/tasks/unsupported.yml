@@ -16,4 +16,3 @@
         - Fedora
 
       To add support, create: roles/nvim/tasks/{{ ansible_distribution | lower }}.yml
-  tags: [nvim]

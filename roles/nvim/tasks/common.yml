@@ -15,53 +15,16 @@
     group: "{{ target_user }}"
     mode: "0755"
   become: yes
-  tags: [nvim]
 
 # -----------------------------
 #  Config Deployment
 # -----------------------------
 
-- name: Check existing nvim config path (client symlink mode)
-  ansible.builtin.stat:
-    path: "{{ target_user_home }}/.config/nvim"
-  register: nvim_user_cfg
-  become: yes
-  when: deployment_mode == 'symlink'
-  tags: [nvim, client]
-
-- name: Remove stale nvim config before symlinking (real dir/file, not a link)
+- name: Remove stale nvim config
   ansible.builtin.file:
     path: "{{ target_user_home }}/.config/nvim"
     state: absent
   become: yes
-  when:
-    - deployment_mode == 'symlink'
-    - nvim_user_cfg.stat.exists
-    - not nvim_user_cfg.stat.islnk
-  tags: [nvim, client]
-
-- name: Deploy nvim config (symlink for clients)
-  ansible.builtin.file:
-    src: "{{ dotfiles_path }}/roles/nvim/files"
-    dest: "{{ target_user_home }}/.config/nvim"
-    state: link
-    force: yes
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-  become: yes
-  become_user: "{{ target_user }}"
-  when: deployment_mode == 'symlink'
-  tags: [nvim, client]
-
-- name: Remove existing nvim config for a clean, pruned copy (servers)
-  # copy prunt NICHT: in der Source geloeschte Dateien (z.B. entfernte Plugins)
-  # bleiben sonst auf dem Ziel liegen -> Verzeichnis vorher spiegeln.
-  ansible.builtin.file:
-    path: "{{ target_user_home }}/.config/nvim"
-    state: absent
-  become: yes
-  when: deployment_mode == 'copy'
-  tags: [nvim, server]
 
 - name: Deploy nvim config (copy for servers)
   ansible.builtin.copy:
@@ -71,8 +34,6 @@
     group: "{{ target_user }}"
     mode: preserve
   become: yes
-  when: deployment_mode == 'copy'
-  tags: [nvim, server]
 
 # -----------------------------
 #  Root Config (optional)
@@ -84,27 +45,7 @@
     state: directory
     mode: "0755"
   become: yes
-  when: setup_root_config | default(true)
-  tags: [nvim]
-
-- name: Check existing /root/.config/nvim
-  ansible.builtin.stat:
-    path: /root/.config/nvim
-  register: nvim_root_cfg
-  become: yes
-  when: setup_root_config | default(true)
-  tags: [nvim]
-
-- name: Remove stale /root/.config/nvim before symlinking (real dir/file, not a link)
-  ansible.builtin.file:
-    path: /root/.config/nvim
-    state: absent
-  become: yes
-  when:
-    - setup_root_config | default(true)
-    - nvim_root_cfg.stat.exists
-    - not nvim_root_cfg.stat.islnk
-  tags: [nvim]
+  when: setup_root_config | default(true) and target_user != 'root'
 
 - name: Symlink nvim config for root user
   ansible.builtin.file:
@@ -113,5 +54,4 @@
     state: link
     force: yes
   become: yes
-  when: setup_root_config | default(true)
-  tags: [nvim]
+  when: setup_root_config | default(true) and target_user != 'root'
