@@ -49,28 +49,43 @@ end
 -- 1. hl.monitor()-Aenderungen werden erst am ENDE des laufenden Lua-Events
 --    angewendet (Prop Refresh). Ein dpms direkt nach dem Enable traefe einen
 --    noch disableten Output und verpufft -- Hyprlands DPMS-Status desynct,
---    spaetere "on"-Aufrufe werden No-ops (Panel bleibt schwarz). Darum wird
---    der Refresh sofort ausgefuehrt.
--- 2. dpms direkt aus einem Bind ist laut Doku undefined behavior -- darum
---    entkoppelt ueber oneshot-Timer (500ms, Wiki-Empfehlung).
--- want_closed statt Closure-Capture: kommt binnen 500ms ein neues Lid-Event,
--- wendet auch ein "alter" Timer den neuesten Zustand an.
+--    spaetere "on"-Aufrufe werden No-ops (Panel bleibt schwarz).
+-- 2. dpms direkt aus einem Bind ist laut Doku undefined behavior.
+-- Beides loest der oneshot-Timer (500ms, Wiki-Empfehlung): er feuert nach dem
+-- Prop Refresh UND ausserhalb des Bind-Kontexts. KEIN
+-- hl.exec_scheduled_prop_refresh_immediately() davor -- das gibt es in der
+-- installierten Hyprland-Version noch nicht (nil -> Runtime-Error im Callback).
 local want_closed = false
+
+-- dpms fuer ALLE aktiven Monitore neu anwenden, nicht nur eDP-1. Noetig weil:
+-- a) ein Monitor, der in eine dpms-off-Session gehotpluggt wird (standalone
+--    zugeklappt -> Kabel rein), sonst schwarz bleibt -- niemand weckt ihn;
+-- b) hyprland.start beim Boot am Dock feuert, bevor die externen registriert
+--    sind -> reconcile entscheidet "standalone+zu" und legt per dpms off die
+--    Session schlaf. Das spaetere monitor.added laeuft durch denselben Pfad
+--    und weckt die externen wieder.
+-- Callback liest want_closed + Monitorliste erst beim Feuern (kein Capture):
+-- stale Timer wenden so immer den neuesten Stand an, mehrfaches Feuern ist
+-- idempotent. "off" wird nur fuer eDP-1 dispatcht und nur, wenn kein externer
+-- aktiv ist (sonst ist eDP-1 disabled und fehlt in der Liste).
+local function apply_dpms()
+	for _, m in ipairs(hl.get_monitors()) do
+		local off = m.name == "eDP-1" and want_closed
+		hl.dispatch(hl.dsp.dpms({ action = off and "off" or "on", monitor = m.name }))
+	end
+end
 
 local function reconcile(closed)
 	if closed == nil then
 		closed = lid_closed()
 	end
+	want_closed = closed
 	if external_present() and closed then
 		hl.monitor({ output = "eDP-1", disabled = true })
 	else
 		hl.monitor({ output = "eDP-1", mode = "preferred", position = "0x0", scale = "auto", disabled = false })
-		hl.exec_scheduled_prop_refresh_immediately()
-		want_closed = closed
-		hl.timer(function()
-			hl.dispatch(hl.dsp.dpms({ action = want_closed and "off" or "on", monitor = "eDP-1" }))
-		end, { timeout = 500, type = "oneshot" })
 	end
+	hl.timer(apply_dpms, { timeout = 500, type = "oneshot" })
 end
 
 -- WICHTIG: Event-Handler gekapselt aufrufen -- hl.on uebergibt dem Callback ein
