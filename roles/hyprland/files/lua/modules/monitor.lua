@@ -4,12 +4,6 @@
 
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 -- Externe Monitore: preferred/auto. eDP-1 steuert reconcile() unten.
-hl.monitor({
-	output = "",
-	mode = "preferred",
-	position = "auto",
-	scale = "auto",
-})
 
 hl.monitor({
 	output = "desc:Dell Inc. DELL U3225QE F7SB684",
@@ -23,6 +17,13 @@ hl.monitor({
 	mode = "1920x1080@60",
 	position = "0x0",
 	scale = 1,
+})
+
+hl.monitor({
+	output = "",
+	mode = "preferred",
+	position = "auto",
+	scale = "auto",
 })
 
 -- Regel (extern x lid):
@@ -82,46 +83,10 @@ local want_closed = false
 -- stale Timer wenden so immer den neuesten Stand an, mehrfaches Feuern ist
 -- idempotent. "off" wird nur fuer eDP-1 dispatcht und nur, wenn kein externer
 -- aktiv ist (sonst ist eDP-1 disabled und fehlt in der Liste).
--- Shadow-State des zuletzt dispatchten eDP-1-dpms. apply_dpms ist die einzige
--- dpms-Quelle, daher ist das zuverlaessig.
-local edp_dpms_off = false
-
--- Kommt das Panel nach Re-Enable bei zugeklappter Lid mit Backlight ~0 hoch,
--- ist es per dpms "an", aber schwarz. Restore nur wenn unter 5% vom Maximum,
--- damit eine bewusst gewaehlte Helligkeit nicht ueberschrieben wird.
-local BACKLIGHT_RESCUE = "sh -c 'cur=$(brightnessctl get); max=$(brightnessctl max); "
-	.. '[ "$cur" -lt $((max / 20)) ] && brightnessctl -e4 set 40%\''
-
--- off->on-Flanke fuer eDP-1: dpms on allein weckt das Panel nicht, wenn es bei
--- geschlossener Lid re-enabled wurde (kein echter Modeset, Backlight aus).
--- Darum harter Zyklus: erst explizit off (repariert auch einen evtl.
--- desyncten Hyprland-dpms-Status), 400ms spaeter on + erzwungener Modeset +
--- Backlight-Rettung. Nur auf der Flanke, damit im Dock-Betrieb der externe
--- nicht bei jedem Lid-Oeffnen mitflackert. Der innere Timer prueft
--- want_closed erneut: klappt die Lid binnen 400ms wieder zu, bleibt off.
-local function wake_edp()
-	hl.dispatch(hl.dsp.dpms({ action = "off", monitor = "eDP-1" }))
-	hl.timer(function()
-		if want_closed then
-			return
-		end
-		hl.dispatch(hl.dsp.dpms({ action = "on", monitor = "eDP-1" }))
-		hl.dispatch(hl.dsp.force_renderer_reload())
-		hl.dispatch(hl.dsp.exec_cmd(BACKLIGHT_RESCUE))
-	end, { timeout = 400, type = "oneshot" })
-end
-
 local function apply_dpms()
 	for _, m in ipairs(hl.get_monitors()) do
 		local off = m.name == "eDP-1" and want_closed
-		if m.name == "eDP-1" and edp_dpms_off and not off then
-			wake_edp()
-		else
-			hl.dispatch(hl.dsp.dpms({ action = off and "off" or "on", monitor = m.name }))
-		end
-		if m.name == "eDP-1" then
-			edp_dpms_off = off
-		end
+		hl.dispatch(hl.dsp.dpms({ action = off and "off" or "on", monitor = m.name }))
 	end
 end
 
