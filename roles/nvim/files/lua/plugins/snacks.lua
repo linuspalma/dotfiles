@@ -7,6 +7,7 @@ return {
 		{ "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
 		{ "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit Current File History" },
 		{ "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log (cwd)" },
+		{ "<leader>tt", function() Snacks.terminal() end, desc = "Terminal (toggle)" },
 		{ "<leader>e", function() Snacks.explorer() end, desc = "Explorer(snacks)" },
 		{
 			"<leader>o",
