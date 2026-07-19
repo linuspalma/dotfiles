@@ -3,12 +3,12 @@
 # installation
 # --------------------------------
 
-- name: Install btop
+- name: dispatch distribution / os
   ansible.builtin.include_tasks: "{{ item }}"
   with_first_found:
     - files:
         - "{{ ansible_facts['distribution'] | lower }}.yml"
-        - "{{ ansible_facts['os_familiy'] | lower }}.yml"
+        - "{{ ansible_facts['os_family'] | lower }}.yml"
         - "unsupported.yml"
       paths: ["install"]
 # --------------------------------
