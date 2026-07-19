@@ -1,0 +1,6 @@
+---
+- name: install btop
+  ansible.builtin.package:
+    name: waybar
+    state: present
+  become: yes

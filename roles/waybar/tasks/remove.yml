@@ -1,0 +1,23 @@
+---
+# --------------------------------
+# package
+# --------------------------------
+
+- name: remove package
+  ansible.builtin.include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_facts['distributiom'] | lower }}.yml"
+        - "{{ ansible_facts['os_family'] | lower }}.yml"
+        - "unsopported.yml"
+      paths: ["uninstall"]
+
+# --------------------------------
+# config
+# --------------------------------
+
+- name: remove staling config
+  ansible.builtin.file:
+    path: "/home/{{ target_user }}/.config/waybar"
+    state: absent
+  become: yes

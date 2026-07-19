@@ -39,3 +39,41 @@ for typing:
 - ttyper pacman -S ttyper
 - gtypist --> tutor yay -S gtypist
 - thokr --> sher minimalistisch yay
+
+- [ ] ags
+- [ ] ashell
+- [x] awww
+- [ ] beets
+- [ ] bluetui
+- [ ] brave
+- [x] btop
+- [ ] claude
+- [ ] feishin
+- [ ] gh-cli
+- [ ] git
+- [ ] helium
+- [ ] hyprland
+- [ ] hyprlock
+- [ ] kitty
+- [ ] lazygit
+- [ ] modemmanager
+- [ ] moonlight
+- [ ] mdp
+- [ ] nautilus
+- [ ] nerdfonts
+- [ ] nextcloud-client
+- [x] nvim
+- [ ] onlyoffice
+- [ ] rofi
+- [ ] screenshots
+- [ ] ssh
+- [ ] steam
+- [ ] sunshine
+- [ ] swaync
+- [ ] tmux
+- [ ] token2
+- [ ] unzip
+- [x] waybar
+- [ ] yay
+- [ ] yazi
+- [ ] zsh

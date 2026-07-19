@@ -1,34 +1,3 @@
-# ---------------- #
-#   Installation   #
-# ---------------- #
-
-- name: install Waybar
-  package:
-    name: waybar
-    state: present
-  become: yes
-  tags: [client]
-  when: ansible_facts['distribution'] == "Archlinux"
-
-# -------------------- #
-#   create Directory   #
-# -------------------- #
-
-- name: Create Waybar config directory
-  file:
-    # path: "/home/{{ target_user }}/.config/waybar"
-    path: "/home/{{ target_user }}/.config/waybar"
-    state: directory
-  tags: [client]
-  when: ansible_facts['distribution'] == "Archlinux"
-
-- name: Symlink Waybar config
-  file:
-    src: "/home/{{ target_user }}/.dotfiles/roles/waybar/files"
-    # src: "{{ ansible_env.HOME }}/.dotfiles/roles/waybar/files/config.jsonc"
-    dest: "/home/{{ target_user }}/.config/waybar"
-    # dest: "{{ ansible_env.HOME }}/.config/waybar/config.jsonc"
-    state: link
-    force: yes
-  tags: [client]
-  when: ansible_facts['distribution'] == "Archlinux"
+---
+- name: dispach operation
+  ansible.builtin.include_tasks: "{{ op | default('deploy')}}.yml"

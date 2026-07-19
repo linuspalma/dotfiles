@@ -48,3 +48,6 @@
         - import_role:
             name: kitty
           tags: [kitty]
+        - import_role:
+            name: waybar
+          tags: [waybar]

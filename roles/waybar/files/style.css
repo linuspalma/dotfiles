@@ -6,7 +6,7 @@
 
 window#waybar {
   background-color: rgba(43, 48, 59, 0.5);
-  border-bottom: 3px solid rgba(100, 114, 125, 0.5);
+  border-right: 3px solid rgba(100, 114, 125, 0.5);
   color: #ffffff;
   transition-property: background-color;
   transition-duration: 0.5s;
@@ -53,24 +53,33 @@ button:hover {
   background-color: #a37800;
 }
 
+/* Schlichte Punkte: aktiv hell, Rest gedimmt, keine Kästen, kein Hover */
 #workspaces button {
-  padding: 0 5px;
-  background-color: transparent;
+  padding: 4px 0;
+  font-size: 9px;
+  background: transparent;
   color: #ffffff;
+  opacity: 0.35;
+  box-shadow: none;
 }
 
 #workspaces button:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: transparent;
+  box-shadow: none;
+  opacity: 0.6;
 }
 
 #workspaces button.focused,
 #workspaces button.active {
-  background-color: #64727d;
-  box-shadow: inset 0 -3px #ffffff;
+  background: transparent;
+  box-shadow: none;
+  opacity: 1;
 }
 
 #workspaces button.urgent {
-  background-color: #eb4d4b;
+  background: transparent;
+  color: #eb4d4b;
+  opacity: 1;
 }
 
 #mode {
@@ -95,7 +104,7 @@ button:hover {
 #scratchpad,
 #power-profiles-daemon,
 #mpd {
-  padding: 0 10px;
+  padding: 10px 10px;
   color: #ffffff;
 }
 
@@ -115,12 +124,14 @@ button:hover {
 }
 
 #clock {
-  background-color: #64727d;
+  /* background-color: #64727d; */
+  font-weight: bolder;
+  font-size: 20px;
 }
 
 #battery {
-  background-color: #ffffff;
-  color: #000000;
+  /* background-color: #ffffff; */
+  color: #ffffff;
 }
 
 #battery.charging,
