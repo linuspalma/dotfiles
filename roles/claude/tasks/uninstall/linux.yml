@@ -1,0 +1,14 @@
+---
+- name: remove claude binary
+  ansible.builtin.file:
+    path: "/home/{{ target_user }}/.local/bin/claude"
+    state: absent
+  become: yes
+  become_user: "{{ target_user }}"
+
+- name: remove claude runtime versions
+  ansible.builtin.file:
+    path: "/home/{{ target_user }}/.local/share/claude"
+    state: absent
+  become: yes
+  become_user: "{{ target_user }}"

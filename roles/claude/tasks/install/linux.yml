@@ -1,0 +1,20 @@
+---
+# ===========================================
+#  Fallback fuer alle Linux Distributionen
+#  (distribution.yml / os_family.yml haben Vorrang)
+# ===========================================
+
+- name: fetch installer script
+  ansible.builtin.get_url:
+    url: https://claude.ai/install.sh
+    dest: /tmp/claude-install.sh
+    mode: "0755"
+  become: yes
+  become_user: "{{ target_user }}"
+
+- name: run claude code installer
+  ansible.builtin.command:
+    cmd: /tmp/claude-install.sh
+    creates: "/home/{{ target_user }}/.local/bin/claude"
+  become: yes
+  become_user: "{{ target_user }}"

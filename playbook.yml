@@ -33,6 +33,13 @@
           tags: [btop]
 
     # --- tuis ---
+    - name: TUI roles
+      when: install_tuis
+      tags: [tui]
+      block:
+        - import_role:
+            name: claude
+          tags: [claude]
 
     # --- guis ---
     - name: GUI roles

@@ -1,0 +1,17 @@
+---
+# --------------------------------
+# installation
+# --------------------------------
+
+- name: dispatch distribution / os
+  ansible.builtin.include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_facts['distribution'] | lower }}.yml"
+        - "{{ ansible_facts['os_family'] | lower }}.yml"
+        - "{{ ansible_facts['system'] | lower }}.yml"
+        - "unsupported.yml"
+      paths: ["install"]
+# --------------------------------
+# config deployment
+# --------------------------------

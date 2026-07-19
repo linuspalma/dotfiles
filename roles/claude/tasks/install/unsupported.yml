@@ -1,0 +1,15 @@
+---
+# ===========================================
+#  Unsupported Distribution
+# ===========================================
+
+- name: Warn about unsupported distribution
+  ansible.builtin.fail:
+    msg: |
+      Distribution '{{ ansible_distribution }}' ({{ ansible_os_family }})
+      is not supported for this role.
+
+      To add support, create one of:
+        roles/claude/tasks/install/{{ ansible_distribution | lower }}.yml
+        roles/claude/tasks/install/{{ ansible_os_family | lower }}.yml
+        roles/claude/tasks/install/{{ ansible_system | lower }}.yml

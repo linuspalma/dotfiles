@@ -41,13 +41,13 @@ for typing:
 - thokr --> sher minimalistisch yay
 
 - [ ] ags
-- [ ] ashell
+- [x] ashell
 - [x] awww
 - [ ] beets
 - [ ] bluetui
 - [ ] brave
 - [x] btop
-- [ ] claude
+- [x] claude
 - [ ] feishin
 - [ ] gh-cli
 - [ ] git
