@@ -48,6 +48,10 @@
         - import_role:
             name: kitty
           tags: [kitty]
+          # statusbar
         - import_role:
             name: waybar
           tags: [waybar]
+        # - import_role:
+        #     name: ashell ## 0 config
+        #   tags: [ashell]

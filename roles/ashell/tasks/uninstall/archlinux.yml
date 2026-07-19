@@ -1,0 +1,8 @@
+---
+- name: Install ashell from AUR
+  become: yes
+  become_user: aur_builder
+  kewlfft.aur.aur:
+    name: ashell
+    use: yay
+    state: absent
