@@ -1,0 +1,7 @@
+---
+- name: install swww
+  ansible.builtin.package:
+    name:
+      - awww
+    state: present
+  become: yes

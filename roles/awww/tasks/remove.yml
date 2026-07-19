@@ -1,0 +1,23 @@
+---
+# --------------------------------
+# packages
+# --------------------------------
+
+- name: dispatch distro / os
+  ansible.builtin.include_tasks: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_facts['distribution'] | lower }}.yml"
+        - "{{ ansible_facts['os_familiy'] | lower }}.yml"
+        - "unsupported.yml"
+      paths: ["uninstall"]
+
+# --------------------------------
+# config
+# --------------------------------
+
+- name: remove staling config
+  ansible.builtin.file:
+    path: "/home/{{ target_user }}/.config/awww"
+    state: absent
+  become: yes

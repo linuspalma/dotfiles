@@ -1,0 +1,3 @@
+---
+- name: dispach operation
+  ansible.builtin.include_tasks: "{{ op | default('deploy')}}.yml"
