@@ -19,18 +19,6 @@
   hosts: all
   become: no
 
-  # roles:
-  #   # --- clis ---
-  #   - role: nvim
-  #     tags: [nvim]
-  #     when: install_clis
-  #   - role: btop
-  #     tags: [btop]
-  #     when: install_clis
-  #   - role: token2
-  #     tags: [token2, client]
-  #     when: install_clis
-
   tasks:
     # --- clis ---
     - name: CLI roles
@@ -43,3 +31,20 @@
         - import_role:
             name: btop
           tags: [btop]
+
+    # --- tuis ---
+
+    # --- guis ---
+    - name: GUI roles
+      when: install_guis
+      tags: [gui]
+      block:
+        - import_role:
+            name: hyprland
+          tags: [hyprland, hypr]
+        - import_role:
+            name: awww
+          tags: [awww]
+        - import_role:
+            name: kitty
+          tags: [kitty]

@@ -14,10 +14,10 @@ build_ignore:
   - .claude
   - .vscode
   - docs
-  - pb
   - inventories
   - ansible.cfg
   - "*.pyc"
   - "__pychache__"
+  - playbook.yml
   - inventory.yml
   - group_vars
